@@ -1,0 +1,12 @@
+scipy
+streamlit
+numpy
+opencv-python
+tqdm
+scikit-learn
+insightface
+matplotlib
+fastapi
+uvicorn
+pillow
+onnxruntime
