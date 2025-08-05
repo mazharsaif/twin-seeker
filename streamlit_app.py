@@ -9,7 +9,7 @@ import time
 from typing import Optional, Tuple
 
 # Configuration
-API_BASE_URL = "http://localhost:8081"
+API_BASE_URL = "http://localhost:8080"
 API_ENDPOINTS = {
     "health": f"{API_BASE_URL}/api/v1/face/health",
     "compare": f"{API_BASE_URL}/api/v1/face/compare",
@@ -258,8 +258,27 @@ def main():
                         st.markdown('</div>', unsafe_allow_html=True)
                     else:
                         st.markdown('<div class="error-box">', unsafe_allow_html=True)
-                        st.error("❌ Comparison failed!")
-                        st.error(f"Error: {result.get('error', 'Unknown error')}")
+                        error_msg = result.get('error', 'Unknown error')
+                        
+                        if "no faces detected" in error_msg.lower():
+                            st.error("👤 No faces detected in one or both images!")
+                            st.warning("Please ensure:")
+                            st.markdown("""
+                            - **Clear face visibility**: Face should be clearly visible
+                            - **Good lighting**: Well-lit images work better
+                            - **Front-facing**: Face should be facing the camera
+                            - **No obstructions**: Glasses, masks, or hair shouldn't cover the face
+                            - **Image quality**: Higher resolution images work better
+                            """)
+                        elif "multiple faces" in error_msg.lower():
+                            st.error("👥 Multiple faces detected!")
+                            st.warning("Please upload images with only one face per image.")
+                        elif "invalid" in error_msg.lower():
+                            st.error("❌ Invalid image format!")
+                            st.warning("Please upload JPG, JPEG, or PNG images.")
+                        else:
+                            st.error(f"❌ Comparison failed: {error_msg}")
+                        
                         st.markdown('</div>', unsafe_allow_html=True)
     
     # Tab 2: Face Detection
@@ -304,8 +323,23 @@ def main():
                         st.markdown("### 📋 Full Response")
                         st.json(result)
                     else:
-                        st.error("❌ Face detection failed!")
-                        st.error(f"Error: {result.get('error', 'Unknown error')}")
+                        error_msg = result.get('error', 'Unknown error')
+                        
+                        if "no faces detected" in error_msg.lower():
+                            st.error("👤 No faces detected in the image!")
+                            st.warning("Please ensure:")
+                            st.markdown("""
+                            - **Clear face visibility**: Face should be clearly visible
+                            - **Good lighting**: Well-lit images work better
+                            - **Front-facing**: Face should be facing the camera
+                            - **No obstructions**: Glasses, masks, or hair shouldn't cover the face
+                            - **Image quality**: Higher resolution images work better
+                            """)
+                        elif "invalid" in error_msg.lower():
+                            st.error("❌ Invalid image format!")
+                            st.warning("Please upload JPG, JPEG, or PNG images.")
+                        else:
+                            st.error(f"❌ Face detection failed: {error_msg}")
     
     # Tab 3: Embedding Extraction
     with tab3:
@@ -356,8 +390,26 @@ def main():
                         st.markdown("### 📋 Full Response")
                         st.json(result)
                     else:
-                        st.error("❌ Embedding extraction failed!")
-                        st.error(f"Error: {result.get('error', 'Unknown error')}")
+                        error_msg = result.get('error', 'Unknown error')
+                        
+                        if "no faces detected" in error_msg.lower():
+                            st.error("👤 No faces detected in the image!")
+                            st.warning("Please ensure:")
+                            st.markdown("""
+                            - **Clear face visibility**: Face should be clearly visible
+                            - **Good lighting**: Well-lit images work better
+                            - **Front-facing**: Face should be facing the camera
+                            - **No obstructions**: Glasses, masks, or hair shouldn't cover the face
+                            - **Image quality**: Higher resolution images work better
+                            """)
+                        elif "multiple faces" in error_msg.lower():
+                            st.error("👥 Multiple faces detected!")
+                            st.warning("Please upload an image with only one face for embedding extraction.")
+                        elif "invalid" in error_msg.lower():
+                            st.error("❌ Invalid image format!")
+                            st.warning("Please upload JPG, JPEG, or PNG images.")
+                        else:
+                            st.error(f"❌ Embedding extraction failed: {error_msg}")
     
     # Tab 4: Batch Comparison
     with tab4:
@@ -414,8 +466,26 @@ def main():
                         st.markdown("### 📋 Full Response")
                         st.json(result)
                     else:
-                        st.error("❌ Batch comparison failed!")
-                        st.error(f"Error: {result.get('error', 'Unknown error')}")
+                        error_msg = result.get('error', 'Unknown error')
+                        
+                        if "no faces detected" in error_msg.lower():
+                            st.error("👤 No faces detected in reference or comparison images!")
+                            st.warning("Please ensure:")
+                            st.markdown("""
+                            - **Clear face visibility**: Faces should be clearly visible
+                            - **Good lighting**: Well-lit images work better
+                            - **Front-facing**: Faces should be facing the camera
+                            - **No obstructions**: Glasses, masks, or hair shouldn't cover faces
+                            - **Image quality**: Higher resolution images work better
+                            """)
+                        elif "multiple faces" in error_msg.lower():
+                            st.error("👥 Multiple faces detected!")
+                            st.warning("Please upload images with only one face per image.")
+                        elif "invalid" in error_msg.lower():
+                            st.error("❌ Invalid image format!")
+                            st.warning("Please upload JPG, JPEG, or PNG images.")
+                        else:
+                            st.error(f"❌ Batch comparison failed: {error_msg}")
     
     # Tab 5: About
     with tab5:
